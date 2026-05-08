@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion de la Moyenne Générale</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0f172a, #1e293b);
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: auto;
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        header h1 {
+            color: #0f172a;
+            font-size: 35px;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            color: #64748b;
+        }
+
+        .card {
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .card h2 {
+            margin-bottom: 15px;
+            color: #0f172a;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 14px;
+            margin-top: 10px;
+            border: 1px solid #cbd5e1;
+            border-radius: 10px;
+            font-size: 15px;
+        }
+
+        input:focus,
+        select:focus {
+            border-color: #2563eb;
+            outline: none;
+        }
+
+        .subject {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .subject label {
+            font-weight: bold;
+            color: #1e293b;
+        }
+
+        button {
+            width: 100%;
+            border: none;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            background: #16a34a;
+            color: white;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background: #15803d;
+        }
+
+        #result {
+            margin-top: 20px;
+        }
+
+        .result-box {
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .success {
+            background: #eff6ff;
+            border: 2px solid #2563eb;
+        }
+
+        .danger {
+            background: #fef2f2;
+            border: 2px solid #dc2626;
+        }
+
+        .student {
+            font-size: 25px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .average {
+            font-size: 45px;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+
+        .success .average {
+            color: #16a34a;
+        }
+
+        .danger .average {
+            color: #dc2626;
+        }
+
+        .message {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        th {
+            background: #0f172a;
+            color: white;
+            padding: 14px;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+            text-align: center;
+        }
+
+        tr:hover {
+            background: #f1f5f9;
+        }
+
+        .delete {
+            background: #dc2626;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .delete:hover {
+            background: #b91c1c;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            color: #94a3b8;
+        }
+
+        @media screen and (max-width: 768px) {
+
+            body {
+                padding: 10px;
+            }
+
+            .container {
+                padding: 15px;
+            }
+
+            header h1 {
+                font-size: 24px;
+            }
+
+            .average {
+                font-size: 35px;
+            }
+
+            table {
+                display: block;
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <main class="container">
+
+        <header>
+            <h1>Gestion de la Moyenne Générale</h1>
+            <p>Application scolaire moderne pour calculer la moyenne Generale</p>
+        </header>
+
+        <section class="card">
+            <h2>Informations de l'élève</h2>
+
+            <input type="text" id="nom" placeholder="Nom">
+            <input type="text" id="prenom" placeholder="Prénom">
+
+            <select id="classe">
+                <option value="">Choisir une classe</option>
+                <option value="6e">6e</option>
+                <option value="5e">5e</option>
+                <option value="4e">4e</option>
+                <option value="3e">3e</option>
+            </select>
+        </section>
+
+        <section class="card">
+            <h2>Matières et notes</h2>
+            <div id="subjectsContainer"></div>
+        </section>
+
+        <section class="card">
+            <button id="calculateBtn">
+                Calculer la moyenne
+            </button>
+        </section>
+
+        <div id="result"></div>
+
+        <section class="card">
+            <h2>Historique des élèves</h2>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nom</th>
+                        <th>Classe</th>
+                        <th>Moyenne</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+
+                <tbody id="history"></tbody>
+            </table>
+        </section>
+
+        <footer>
+            Développé par N'GORAN MICHAEL © 2026
+        </footer>
+
+    </main>
+
+    <script>
+        // CLASSES
+        const classes = {
+            "6e": { "Math": 4, "PC": 3, "SVT": 2, "EDHC": 1 },
+            "5e": { "Math": 4, "Français": 3, "Anglais": 2 },
+            "4e": { "Math": 4, "PC": 3, "SVT": 2 },
+            "3e": { "Math": 4, "PC": 3, "SVT": 2, "Français": 3 }
+        };
+
+        let students = JSON.parse(localStorage.getItem("students")) || [];
+
+        function saveData() {
+            localStorage.setItem("students", JSON.stringify(students));
+        }
+
+        const classe = document.getElementById("classe");
+        const subjectsContainer = document.getElementById("subjectsContainer");
+        const calculateBtn = document.getElementById("calculateBtn");
+        const result = document.getElementById("result");
+        const history = document.getElementById("history");
+
+        classe.addEventListener("change", () => {
+
+            subjectsContainer.innerHTML = "";
+
+            const selectedClass = classe.value;
+
+            if (!selectedClass) return;
+
+            const subjects = classes[selectedClass];
+
+            for (let matiere in subjects) {
+
+                const div = document.createElement("div");
+                div.classList.add("subject");
+
+                div.innerHTML = `
+                    <label>${matiere} (Coef ${subjects[matiere]})</label>
+                    <input 
+                        type="number"
+                        class="note"
+                        data-matiere="${matiere}"
+                        placeholder="Entrer la note"
+                        min="0"
+                        max="20"
+                    >
+                `;
+
+                subjectsContainer.appendChild(div);
+            }
+        });
+
+        calculateBtn.addEventListener("click", () => {
+
+            const nom = document.getElementById("nom").value.trim();
+            const prenom = document.getElementById("prenom").value.trim();
+            const selectedClass = classe.value;
+
+            if (!nom || !prenom || !selectedClass) {
+                alert("Remplissez toutes les informations !");
+                return;
+            }
+
+            const inputs = document.querySelectorAll(".note");
+
+            if (inputs.length === 0) {
+                alert("Veuillez d'abord afficher les matières !");
+                return;
+            }
+
+            let notes = {};
+            let coeffs = classes[selectedClass];
+
+            for (let input of inputs) {
+
+                if (input.value === "") {
+                    alert("Toutes les notes doivent être remplies !");
+                    return;
+                }
+
+                let matiere = input.dataset.matiere;
+                let valeur = Number(input.value);
+
+                if (!notes[matiere]) {
+                    notes[matiere] = [];
+                }
+
+                notes[matiere].push(valeur);
+            }
+
+            let total = 0;
+            let totalCoef = 0;
+
+            for (let matiere in notes) {
+                let note = notes[matiere][0];
+                total += note * coeffs[matiere];
+                totalCoef += coeffs[matiere];
+            }
+
+            let moyenneGenerale = total / totalCoef;
+
+            result.innerHTML = `
+                <div class="result-box ${moyenneGenerale >= 12 ? 'success' : 'danger'}">
+
+                    <h2>
+                        ${moyenneGenerale >= 12 ? "🎉 Félicitations" : "😢 Résultat insuffisant"}
+                    </h2>
+
+                    <div class="student">
+                        👨‍🎓 ${nom} ${prenom}
+                    </div>
+
+                    <p>Classe : ${selectedClass}</p>
+
+                    <div class="average">
+                        ${moyenneGenerale.toFixed(2)} / 20
+                    </div>
+
+                    <div class="message">
+                        ${moyenneGenerale >= 12 
+                            ? "🎓 Bon travail continue ainsi !" 
+                            : "📚 Mettez-vous au travail 💪"}
+                    </div>
+
+                </div>
+            `;
+
+            students.push({
+                nom,
+                prenom,
+                classe: selectedClass,
+                moyenne: moyenneGenerale.toFixed(2)
+            });
+
+            saveData();
+            displayStudents();
+
+            document.querySelectorAll(".note").forEach(input => {
+                input.value = "";
+            });
+        });
+
+        function displayStudents() {
+
+            history.innerHTML = "";
+
+            students.forEach((s, index) => {
+
+                let row = document.createElement("tr");
+
+                row.innerHTML = `
+                    <td>${s.nom} ${s.prenom}</td>
+                    <td>${s.classe}</td>
+                    <td>${s.moyenne}</td>
+                    <td>
+                        <button class="delete" data-index="${index}">
+                            Supprimer
+                        </button>
+                    </td>
+                `;
+
+                history.appendChild(row);
+            });
+        }
+
+        displayStudents();
+
+        history.addEventListener("click", (e) => {
+
+            if (e.target.classList.contains("delete")) {
+
+                let index = e.target.dataset.index;
+
+                students.splice(index, 1);
+
+                saveData();
+                displayStudents();
+            }
+        });
+    </script>
+
+</body>
+
+</html>
